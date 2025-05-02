@@ -1,0 +1,9 @@
+{
+  "id": "mangaTracking-plugin",
+  "name": "manga tracking",
+  "version": "0.1.0",
+  "minAppVersion": "0.15.0",
+  "description": "",
+  "author": "Hyosuporte",
+  "isDesktopOnly": false
+}
