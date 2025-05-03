@@ -1,9 +1,10 @@
 {
-  "id": "mangaTracking-plugin",
-  "name": "manga tracking",
+  "id": "manga-feed",
+  "name": "Manga Feed",
   "version": "0.1.0",
   "minAppVersion": "0.15.0",
-  "description": "",
+  "description": "Automatically tracks your manga reading progress by updating a Markdown table with the latest chapter info.",
   "author": "Hyosuporte",
+  "authorUrl": "https://github.com/Hyosuporte",
   "isDesktopOnly": false
 }
