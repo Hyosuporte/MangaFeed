@@ -19,10 +19,7 @@ main.js
 .env.local
 .env.*.local
 
-.DS_Store
 .vscode/
 .idea/
-
-coverage/
 
 pnpm-lock.yaml
