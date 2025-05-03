@@ -7,29 +7,19 @@ build/
 out/
 
 # Archivos temporales de esbuild
-*.js
+main.js
 *.js.map
 *.cjs
 *.mjs
 
-# Archivos generados por herramientas
 *.log
 *.tsbuildinfo
 
-# Configuración de entorno
 .env
 .env.local
 .env.*.local
 
-# Archivos de sistema / editor
-.DS_Store
 .vscode/
 .idea/
 
-# Coverage de tests
-coverage/
-
-# Archivos de lock opcionales (elige uno según tu gestor de paquetes)
-# package-lock.json
-# yarn.lock
 pnpm-lock.yaml
