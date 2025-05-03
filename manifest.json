@@ -6,5 +6,5 @@
   "description": "Automatically tracks your manga reading progress by updating a Markdown table with the latest chapter info.",
   "author": "Hyosuporte",
   "authorUrl": "https://github.com/Hyosuporte",
-  "isDesktopOnly": false
+  "isDesktopOnly": true
 }
