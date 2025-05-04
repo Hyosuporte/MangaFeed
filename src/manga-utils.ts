@@ -1,9 +1,7 @@
 import { Page } from 'puppeteer-core';
 import fs from 'fs/promises';
+import { PathLike } from 'fs';
 
-const pathFile = 'F:/Obsidian/hyosuporte/Manga.md';
-
-const pattern = /Cap[ií]tulo\b\s*[:\s]*([\d,]+)/;
 const rowPattern =
   /^\|\s*(.+?)\s*\|\s*(\d+)\s*\|\s*(\d+)?\s*\|\s*(.+?)\s*\|\s*\[Leer\]\((https?:\/\/.+?)\)\s*\|$/;
 
@@ -15,7 +13,7 @@ type Manga = {
   url: string;
 };
 
-export async function getManga() {
+export async function getManga(pathFile: PathLike) {
   const content = (await fs.readFile(pathFile, 'utf-8')).split('\n');
   const mangas = [];
 
@@ -59,7 +57,6 @@ export async function searchChapter(
     );
 
     const text = await page.evaluate(() => document.body.innerText);
-    console.log(text);
     const match = /Cap[ií]tulo\b\s*[:\s]*([\d,]+)/.exec(text);
 
     if (match) {
@@ -82,6 +79,7 @@ export async function searchChapter(
  * @returns Una promesa que se resuelve cuando se ha escrito el nuevo contenido en el archivo.
  */
 export async function updateMarkdown(
+  pathFile: PathLike,
   mangas: Manga[],
   content: string[]
 ): Promise<void> {

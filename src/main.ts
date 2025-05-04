@@ -1,19 +1,33 @@
 import { Plugin, Notice } from 'obsidian';
 import { getManga, searchChapter, updateMarkdown } from './manga-utils';
 import puppeteer from 'puppeteer-core';
-import { executablePath } from 'puppeteer';
+import { MangaFeedSettingTab, puppeterConfig } from './settings';
 
-export default class ExamplePlugin extends Plugin {
+interface MangeFeedPluginSettings {
+  browserPath: string;
+  notionPath: string;
+}
+
+const DEFAULT_SETTINGS: Partial<MangeFeedPluginSettings> = {
+  browserPath: '',
+  notionPath: '',
+};
+
+export default class MangaFeedPlugin extends Plugin {
+  settings!: MangeFeedPluginSettings;
+
   async onload() {
-    this.addRibbonIcon('file-check', 'update manga', async () => {
-      const { mangas, content } = await getManga();
-      try {
-        const browser = await puppeteer.launch({
-          headless: true,
-          executablePath: executablePath(),
-          args: ['--no-sandbox', '--disable-gpu', '--disable-webgl'],
-        });
+    await this.loadSettings();
 
+    this.addSettingTab(new MangaFeedSettingTab(this.app, this));
+
+    this.addRibbonIcon('file-check', 'Update Chapter Manga', async () => {
+      const { mangas, content } = await getManga(this.settings.notionPath);
+
+      try {
+        puppeterConfig.executablePath = this.settings.browserPath;
+
+        const browser = await puppeteer.launch(puppeterConfig);
         const page = await browser.newPage();
 
         for (const manga of mangas) {
@@ -22,7 +36,7 @@ export default class ExamplePlugin extends Plugin {
           if (last !== null) manga.lastChapter = last;
         }
 
-        await updateMarkdown(mangas, content);
+        await updateMarkdown(this.settings.notionPath, mangas, content);
         await browser.close();
 
         new Notice('📄 ¡Archivo Obsidian actualizado con éxito!');
@@ -32,7 +46,12 @@ export default class ExamplePlugin extends Plugin {
       }
     });
   }
-  async onunload() {
-    console.log('unloading plugin');
+
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
   }
 }
