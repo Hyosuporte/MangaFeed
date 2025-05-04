@@ -1,16 +1,16 @@
-# 📖 Manga Feed
+# Manga Feed
 
 **Manga Feed** is an Obsidian plugin that automatically tracks your manga reading progress from a Markdown table.  
 It connects to the manga websites using `puppeteer-core`, extracts the latest available chapter, and updates your `.md` file with the current reading status.
 
 ---
 
-## 🧩 Features
+## Features
 
-- 📥 Reads a Markdown table with your manga list.
-- 🌐 Uses `puppeteer-core` to visit manga websites.
-- 🔍 Detects the most recent chapter number.
-- ✏️ Updates the file with reading status:
+- Reads a Markdown table with your manga list.
+- Uses `puppeteer-core` to visit manga websites.
+- Detects the most recent chapter number.
+- Updates the file with reading status:
   - ✅ **Daily** — you're up to date.
   - 🔴 **Overdue** — you have unread chapters.
 
@@ -31,7 +31,7 @@ Each row must follow this structure exactly for the plugin to parse and update i
 
 ---
 
-## ⚙️ Requirements
+## Requirements
 
 - Node.js
 - `puppeteer-core`
@@ -39,7 +39,7 @@ Each row must follow this structure exactly for the plugin to parse and update i
 
 ---
 
-## 🚀 Installation (Manual / Development)
+## Installation (Manual / Development)
 
 1. Clone this repo into your Obsidian vault under:
 
@@ -72,6 +72,18 @@ const pathFile = 'F:/Obsidian/hyosuporte/Manga.md';
 ```
 
 Make sure to replace it with the correct path to your manga tracking file inside your vault.
+
+### Browser Path for Scraping
+
+To fetch the latest chapters, Manga Feed uses puppeteer-core, which requires a valid browser path (Chromium or Firefox only).
+
+Once the plugin is installed and enabled:
+
+- Go to Settings > Plugin Options > Manga Feed.
+
+- You’ll see a field labeled Browser Location like this:
+
+- Paste the full path to your browser executable (Chrome or Firefox).
 
 ---
 
