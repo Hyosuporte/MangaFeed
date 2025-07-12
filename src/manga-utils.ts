@@ -53,7 +53,7 @@ export async function searchChapter(
         const pattern = /Cap[ií]tulo\b\s*[:\s]*([\d,]+)/;
         return pattern.test(document.body.innerText);
       },
-      { timeout: 5000 }
+      { timeout: 8000 }
     );
 
     const text = await page.evaluate(() => document.body.innerText);
@@ -63,7 +63,7 @@ export async function searchChapter(
       return parseInt(match[1].replace(',', ''));
     }
   } catch (error) {
-    console.log(`Error al buscar capítulo en ${url}:`, error);
+    console.log(`Error when searching for chapter in ${url}:`, error);
   }
   return null;
 }

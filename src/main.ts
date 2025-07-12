@@ -31,7 +31,7 @@ export default class MangaFeedPlugin extends Plugin {
         const page = await browser.newPage();
 
         for (const manga of mangas) {
-          new Notice(`🔍 Buscando capítulo para: ${manga.name}`);
+          new Notice(`🔍 Seeking chapter for: ${manga.name}`);
           const last = await searchChapter(page, manga.url);
           if (last !== null) manga.lastChapter = last;
         }
@@ -39,10 +39,10 @@ export default class MangaFeedPlugin extends Plugin {
         await updateMarkdown(this.settings.notionPath, mangas, content);
         await browser.close();
 
-        new Notice('📄 ¡Archivo Obsidian actualizado con éxito!');
+        new Notice('Succes tracking');
       } catch (err) {
-        console.error('❌ Error al actualizar manga:', err);
-        new Notice('❌ Error al actualizar manga. Revisa la consola.');
+        console.error('❌ Error updating manga:', err);
+        new Notice('❌ Error updating manga. Check console.');
       }
     });
   }

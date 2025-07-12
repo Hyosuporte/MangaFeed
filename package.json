@@ -1,21 +1,23 @@
 {
-  "name": "manga-tracking",
-  "version": "1.0.0",
-  "description": "",
+  "name": "manga-feed",
+  "version": "0.1.0",
+  "description": "Automatically tracks your manga reading progress by updating a Markdown table with the latest chapter info.",
   "scripts": {
     "build": "node esbuild.config.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "manga",
+    "Automatically"
+  ],
+  "author": "Hyosuporte",
+  "license": "GPL-3.0-only",
   "packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
   "devDependencies": {
     "@types/node": "^22.14.0",
     "esbuild": "^0.25.2",
-    "obsidian": "^1.8.7",
-    "puppeteer": "^24.6.1"
+    "obsidian": "^1.8.7"
   },
   "dependencies": {
-    "puppeteer-core": "^24.6.1"
+    "puppeteer-core": "^24.8.0"
   }
 }

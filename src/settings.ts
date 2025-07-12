@@ -17,7 +17,7 @@ export class MangaFeedSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Browser Location')
-      .setDesc('Specify the browser path for manga scraping.')
+      .setDesc('The browser path for manga scraping.')
       .addText((browser) =>
         browser
           .setPlaceholder('C:\\Program Files\\Zen Browser\\zen.exe')
@@ -29,8 +29,8 @@ export class MangaFeedSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('Note Location')
-      .setDesc('Test')
+      .setName('Notes route')
+      .setDesc('your manga notes route')
       .addText((notion) =>
         notion
           .setPlaceholder('C:\\Obsidian\\Manga.md')
