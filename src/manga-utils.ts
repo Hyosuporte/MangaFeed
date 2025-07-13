@@ -2,8 +2,7 @@ import { Page } from 'puppeteer-core';
 import fs from 'fs/promises';
 import { PathLike } from 'fs';
 
-const rowPattern =
-  /^\|\s*(.+?)\s*\|\s*(\d+)\s*\|\s*(\d+)?\s*\|\s*(.+?)\s*\|\s*\[Leer\]\((https?:\/\/.+?)\)\s*\|$/;
+let rowPattern: RegExp;
 
 type Manga = {
   name: string;
@@ -13,9 +12,13 @@ type Manga = {
   url: string;
 };
 
-export async function getManga(pathFile: PathLike) {
+export async function getManga(pathFile: PathLike, tagName: string) {
   const content = (await fs.readFile(pathFile, 'utf-8')).split('\n');
   const mangas = [];
+
+  rowPattern = new RegExp(
+    `^\\|\\s*(.+?)\\s*\\|\\s*(\\d+)\\s*\\|\\s*(\\d+)?\\s*\\|\\s*(.+?)\\s*\\|\\s*\\[${tagName}\\]\\((https?:\\/\\/.*?)\\)\\s*\\|$`
+  );
 
   for (const line of content) {
     const match = rowPattern.exec(line);
@@ -81,7 +84,8 @@ export async function searchChapter(
 export async function updateMarkdown(
   pathFile: PathLike,
   mangas: Manga[],
-  content: string[]
+  content: string[],
+  tagName: string
 ): Promise<void> {
   const updatedLines: string[] = [];
 
@@ -93,7 +97,7 @@ export async function updateMarkdown(
       const last = manga?.lastChapter;
       const state = last && manga.read == last ? '✅ Daily' : '🔴 Overdue';
 
-      const newLine = `| ${name} | ${read} | ${last} | ${state} | [Leer](${url}) |`;
+      const newLine = `| ${name} | ${read} | ${last} | ${state} | [${tagName}](${url}) |`;
 
       updatedLines.push(newLine);
     } else {

@@ -6,11 +6,13 @@ import { MangaFeedSettingTab, puppeterConfig } from './settings';
 interface MangeFeedPluginSettings {
   browserPath: string;
   notionPath: string;
+  tagName: string;
 }
 
 const DEFAULT_SETTINGS: Partial<MangeFeedPluginSettings> = {
   browserPath: '',
   notionPath: '',
+  tagName: '',
 };
 
 export default class MangaFeedPlugin extends Plugin {
@@ -22,7 +24,10 @@ export default class MangaFeedPlugin extends Plugin {
     this.addSettingTab(new MangaFeedSettingTab(this.app, this));
 
     this.addRibbonIcon('file-check', 'Update Chapter Manga', async () => {
-      const { mangas, content } = await getManga(this.settings.notionPath);
+      const { mangas, content } = await getManga(
+        this.settings.notionPath,
+        this.settings.tagName
+      );
 
       try {
         puppeterConfig.executablePath = this.settings.browserPath;
@@ -36,7 +41,12 @@ export default class MangaFeedPlugin extends Plugin {
           if (last !== null) manga.lastChapter = last;
         }
 
-        await updateMarkdown(this.settings.notionPath, mangas, content);
+        await updateMarkdown(
+          this.settings.notionPath,
+          mangas,
+          content,
+          this.settings.tagName
+        );
         await browser.close();
 
         new Notice('Succes tracking');

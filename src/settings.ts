@@ -1,4 +1,3 @@
-import test from 'node:test';
 import MangaFeedPlugin from './main';
 import { App, PluginSettingTab, Setting } from 'obsidian';
 
@@ -37,6 +36,19 @@ export class MangaFeedSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.notionPath)
           .onChange(async (value) => {
             this.plugin.settings.notionPath = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName('Read link tag')
+      .setDesc('')
+      .addText((tagName) =>
+        tagName
+          .setPlaceholder('Read')
+          .setValue(this.plugin.settings.tagName)
+          .onChange(async (value) => {
+            this.plugin.settings.tagName = value;
             await this.plugin.saveSettings();
           })
       );
