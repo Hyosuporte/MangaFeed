@@ -53,14 +53,14 @@ export async function searchChapter(
 
     await page.waitForFunction(
       () => {
-        const pattern = /Cap[ií]tulo\b\s*[:\s]*([\d,]+)/;
+        const pattern = /\b(?:Cap[ií]tulo|Chapter)\b\s*[:\s]*([\d,]+)/;
         return pattern.test(document.body.innerText);
       },
       { timeout: 8000 }
     );
 
     const text = await page.evaluate(() => document.body.innerText);
-    const match = /Cap[ií]tulo\b\s*[:\s]*([\d,]+)/.exec(text);
+    const match = /\b(?:Cap[ií]tulo|Chapter)\b\s*[:\s]*([\d,]+)/.exec(text);
 
     if (match) {
       return parseInt(match[1].replace(',', ''));
