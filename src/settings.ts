@@ -19,7 +19,7 @@ export class MangaFeedSettingTab extends PluginSettingTab {
       .setDesc('The browser path for manga scraping.')
       .addText((browser) =>
         browser
-          .setPlaceholder('C:\\Program Files\\Zen Browser\\zen.exe')
+          .setPlaceholder('C:\\Program Files\\chrome\\zen.exe')
           .setValue(this.plugin.settings.browserPath)
           .onChange(async (value) => {
             this.plugin.settings.browserPath = value;

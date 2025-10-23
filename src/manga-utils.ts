@@ -107,3 +107,7 @@ export async function updateMarkdown(
 
   await fs.writeFile(pathFile, updatedLines.join('\n'), 'utf-8');
 }
+
+export function getPercentage(total: number, currentChapter: number) {
+  return (currentChapter * 100) / total;
+}

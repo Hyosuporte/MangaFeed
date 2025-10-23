@@ -1,5 +1,10 @@
 import { Plugin, Notice } from 'obsidian';
-import { getManga, searchChapter, updateMarkdown } from './manga-utils';
+import {
+  getManga,
+  searchChapter,
+  updateMarkdown,
+  getPercentage,
+} from './manga-utils';
 import puppeteer from 'puppeteer-core';
 import { MangaFeedSettingTab, puppeterConfig } from './settings';
 
@@ -35,11 +40,21 @@ export default class MangaFeedPlugin extends Plugin {
         const browser = await puppeteer.launch(puppeterConfig);
         const page = await browser.newPage();
 
-        for (const manga of mangas) {
-          new Notice(`🔍 Seeking chapter for: ${manga.name}`);
-          const last = await searchChapter(page, manga.url);
-          if (last !== null) manga.lastChapter = last;
+        const alertInfo = new Notice('', 0);
+
+        for (let i = 0; i < mangas.length; i++) {
+          alertInfo.setMessage(
+            `🔍 ${getPercentage(mangas.length, i + 1).toFixed(0)}% | ${
+              mangas[i].name
+            }`
+          );
+
+          const last = await searchChapter(page, mangas[i].url);
+          if (last !== null) mangas[i].lastChapter = last;
+          await sleep(700);
         }
+
+        await browser.close();
 
         await updateMarkdown(
           this.settings.notionPath,
@@ -47,12 +62,13 @@ export default class MangaFeedPlugin extends Plugin {
           content,
           this.settings.tagName
         );
-        await browser.close();
 
-        new Notice('Succes tracking');
+        alertInfo.setMessage('✅ Succes tracking');
+        await sleep(700);
+        alertInfo.hide();
       } catch (err) {
         console.error('❌ Error updating manga:', err);
-        new Notice('❌ Error updating manga. Check console.');
+        new Notice('❌ Error updating manga. Check console.', 2000);
       }
     });
   }
