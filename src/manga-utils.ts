@@ -17,7 +17,7 @@ export async function getManga(pathFile: PathLike, tagName: string) {
   const mangas = [];
 
   rowPattern = new RegExp(
-    `^\\|\\s*(.+?)\\s*\\|\\s*(\\d+)\\s*\\|\\s*(\\d+)?\\s*\\|\\s*(.+?)\\s*\\|\\s*\\[${tagName}\\]\\((https?:\\/\\/.*?)\\)\\s*\\|$`
+    `^\\|\\s*(.+?)\\s*\\|\\s*(\\d+)\\s*\\|\\s*(\\d+)?\\s*\\|\\s*(.+?)\\s*\\|\\s*\\[${tagName}\\]\\((https?:\\/\\/.*?)\\)\\s*\\|$`,
   );
 
   for (const line of content) {
@@ -46,24 +46,44 @@ export async function getManga(pathFile: PathLike, tagName: string) {
  */
 export async function searchChapter(
   page: Page,
-  url: string
+  url: string,
 ): Promise<number | null> {
   try {
+    let lastChapter: number = 0;
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
     await page.waitForFunction(
       () => {
-        const pattern = /\b(?:Cap[ií]tulo|Chapter)\b\s*[:\s]*([\d,]+)/;
+        const pattern = /(?:Cap[ií]tulo|Chapter)\s*[:\s]*([\d,]+)(?=\D|$)/gi;
         return pattern.test(document.body.innerText);
       },
-      { timeout: 8000 }
+      { timeout: 8200 },
     );
 
-    const text = await page.evaluate(() => document.body.innerText);
-    const match = /\b(?:Cap[ií]tulo|Chapter)\b\s*[:\s]*([\d,]+)/.exec(text);
+    const text = await page.evaluate(() => {
+      const body = document.body.cloneNode(true);
+      body
+        .querySelectorAll('.bg-comments-background')
+        .forEach((el) => el.remove());
+
+      return body.innerText;
+    });
+
+    const match = text.matchAll(
+      /(?:Cap[ií]tulo|Chapter)\s*[:\s]*([\d,]+)(?=\D|$)/gi,
+    );
 
     if (match) {
-      return parseInt(match[1].replace(',', ''));
+      let index = 0;
+      for (const item of match) {
+        index++;
+        const chapter = parseInt(item[1].replace(',', ''));
+        if (lastChapter === null || chapter > lastChapter) {
+          lastChapter = chapter;
+        }
+        if (index > 2) break;
+      }
+      return lastChapter;
     }
   } catch (error) {
     console.log(`Error when searching for chapter in ${url}:`, error);
@@ -85,7 +105,7 @@ export async function updateMarkdown(
   pathFile: PathLike,
   mangas: Manga[],
   content: string[],
-  tagName: string
+  tagName: string,
 ): Promise<void> {
   const updatedLines: string[] = [];
 
