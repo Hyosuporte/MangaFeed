@@ -52,26 +52,38 @@ export async function searchChapter(
     let lastChapter: number = 0;
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
+    const patternStr =
+      '(?:Cap[ií]tulo|Chapter|Cap\\.|Ch\\.)\\s*[:\\s]*([\\d,]+)(?=\\D|$)';
+
     await page.waitForFunction(
-      () => {
-        const pattern = /(?:Cap[ií]tulo|Chapter)\s*[:\s]*([\d,]+)(?=\D|$)/gi;
+      (ps) => {
+        const pattern = new RegExp(ps, 'gi');
         return pattern.test(document.body.innerText);
       },
       { timeout: 8200 },
+      patternStr,
     );
 
     const text = await page.evaluate(() => {
-      const body = document.body.cloneNode(true);
-      body
-        .querySelectorAll('.bg-comments-background')
-        .forEach((el) => el.remove());
+      const elementsToRemove = document.querySelectorAll(
+        '.bg-comments-background, script, style, noscript',
+      );
+      elementsToRemove.forEach((el) => el.remove());
 
-      return body.innerText;
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        null,
+      );
+      let combinedText = '';
+      let node;
+      while ((node = walker.nextNode())) {
+        combinedText += ' ' + node.textContent + ' ';
+      }
+      return combinedText;
     });
 
-    const match = text.matchAll(
-      /(?:Cap[ií]tulo|Chapter)\s*[:\s]*([\d,]+)(?=\D|$)/gi,
-    );
+    const match = text.matchAll(new RegExp(patternStr, 'gi'));
 
     if (match) {
       let index = 0;
@@ -81,7 +93,7 @@ export async function searchChapter(
         if (lastChapter === null || chapter > lastChapter) {
           lastChapter = chapter;
         }
-        if (index > 2) break;
+        if (index > 5) break;
       }
       return lastChapter;
     }
